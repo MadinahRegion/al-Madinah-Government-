@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>المدينة المنورة ومراكزها</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.4.3/echarts.min.js"></script>
+<style>
+:root{--c1:#1F6F5F;--c2:#2FA084;--c3:#6FCF97;--bg:#EEEEEE;--surface:#fff;--border:#c8dcd8;--txt:#0D2420;--muted:#3d6b62;--font:'Tajawal',sans-serif;--r:10px;--shadow:0 2px 12px rgba(11,61,94,.10);--toc-w:230px;--topbar-h:52px;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:var(--font);background:var(--bg);color:var(--txt);line-height:1.75;overflow-x:hidden;}
+#topbar{position:fixed;top:0;right:0;left:0;z-index:200;height:var(--topbar-h);background:var(--c1);display:flex;align-items:center;padding:0 1.25rem;box-shadow:0 2px 8px rgba(0,0,0,.25);}
+#topbar .tb-title{font-size:1.2rem;font-weight:800;color:#fff;flex:1;}
+#toc-toggle{display:none;align-items:center;justify-content:center;width:36px;height:36px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);border-radius:6px;cursor:pointer;color:#fff;font-size:1.1rem;transition:.2s;flex-shrink:0;}
+#toc-toggle:hover{background:rgba(255,255,255,.25);}
+#shell{display:flex;flex-direction:row;min-height:100vh;padding-top:var(--topbar-h);}
+#content{flex:1;min-width:0;padding:2rem 2rem 5rem;margin-right:var(--toc-w);}
+section{margin-bottom:3.5rem;scroll-margin-top:calc(var(--topbar-h) + 16px);}
+#toc{position:fixed;top:var(--topbar-h);right:0;bottom:0;width:var(--toc-w);background:var(--surface);border-right:1px solid var(--border);overflow-y:auto;z-index:150;padding:1rem 0 2rem;transition:transform .3s ease;}
+#toc::-webkit-scrollbar{width:4px;}
+#toc::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+.toc-item{display:block;padding:.55rem 1.1rem .55rem 1rem;font-size:.82rem;font-weight:500;color:var(--muted);text-decoration:none;border-right:3px solid transparent;transition:.18s;line-height:1.4;}
+.toc-item:hover{color:var(--c2);background:rgba(47,160,132,.06);}
+.toc-item.active{color:var(--c1);font-weight:700;border-right-color:var(--c3);background:rgba(47,160,132,.08);}
+.toc-item.active::before{content:'';display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--c3);margin-left:.55rem;vertical-align:middle;margin-bottom:1px;}
+#toc-overlay{display:none;position:fixed;inset:0;z-index:140;background:rgba(0,0,0,.4);opacity:0;transition:opacity .3s;}
+#toc-overlay.open{display:block;opacity:1;}
+.sec-head{font-size:1.15rem;font-weight:800;color:var(--c1);padding-bottom:.65rem;margin-bottom:1.5rem;border-bottom:2px solid var(--c3);}
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.25rem;margin-bottom:1.5rem;}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1.5rem 1.75rem;box-shadow:var(--shadow);border-top:4px solid var(--c2);transition:transform .18s,box-shadow .18s;}
+.stat-card:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(11,61,94,.14);}
+.stat-card .num{font-size:2.2rem;font-weight:800;color:var(--c1);line-height:1;}
+.stat-card .unit{font-size:.95rem;font-weight:600;color:var(--c2);margin-right:.3rem;}
+.stat-card .label{font-size:.92rem;font-weight:700;color:var(--txt);margin:.4rem 0 .2rem;}
+.stat-card .note{font-size:.78rem;color:var(--muted);line-height:1.55;}
+.tbl-wrap{overflow-x:auto;border-radius:var(--r);border:1px solid var(--border);box-shadow:var(--shadow);}
+table{width:100%;border-collapse:collapse;font-size:.9rem;}
+thead tr{background:var(--c1);color:#fff;}
+thead th{padding:.8rem 1rem;text-align:right;font-weight:600;white-space:nowrap;}
+tbody tr{border-bottom:1px solid var(--border);}
+tbody tr:last-child{border-bottom:none;}
+tbody tr:hover{background:#d8f0ea;}
+tbody td{padding:.75rem 1rem;color:var(--txt);}
+tbody td:first-child{font-weight:600;}
+tfoot tr{background:#d8f0ea;font-weight:700;}
+tfoot td{padding:.75rem 1rem;border-top:2px solid var(--c2);}
+.pb{display:flex;align-items:center;gap:.5rem;}
+.pb-track{flex:1;height:7px;background:var(--border);border-radius:100px;min-width:60px;}
+.pb-fill{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--c2),var(--c3));}
+.chart-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1.25rem;box-shadow:var(--shadow);}
+.chart-title{font-size:.9rem;font-weight:700;color:var(--c1);margin-bottom:.85rem;}
+.chart-box{width:100%;height:280px;}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;}
+.info-text{background:var(--surface);border-right:4px solid var(--c3);border-radius:0 var(--r) var(--r) 0;padding:1.1rem 1.25rem;font-size:.9rem;color:var(--muted);line-height:1.8;box-shadow:var(--shadow);margin-bottom:1.25rem;}
+.invest-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1.25rem;margin-bottom:1.5rem;}
+.invest-card{background:linear-gradient(135deg,var(--c1),var(--c2));color:#fff;border-radius:var(--r);padding:1.4rem 1.6rem;box-shadow:0 4px 16px rgba(31,111,95,.28);}
+.invest-card .in{font-size:2rem;font-weight:800;line-height:1;}
+.invest-card .iu{font-size:.88rem;font-weight:600;margin-right:.2rem;opacity:.85;}
+.invest-card .il{font-size:.85rem;font-weight:600;margin-top:.3rem;opacity:.9;}
+@media(max-width:900px){:root{--toc-w:260px;}#toc{transform:translateX(100%);box-shadow:none;border-right:none;border-left:1px solid var(--border);}#toc.open{transform:translateX(0);box-shadow:4px 0 20px rgba(0,0,0,.18);}#content{margin-right:0;}#toc-toggle{display:flex;}}
+@media(max-width:680px){.two-col{grid-template-columns:1fr;}.stat-card .num{font-size:1.8rem;}#content{padding:1.25rem 1rem 4rem;}}
+</style>
+</head>
+<body>
+<header id="topbar">
+  <div class="tb-title">المدينة المنورة ومراكزها</div>
+  <button id="toc-toggle" aria-label="فتح قائمة المحتويات" aria-expanded="false" aria-controls="toc">&#9776;</button>
+</header>
+<div id="toc-overlay" aria-hidden="true"></div>
+<div id="shell">
+<main id="content">
+
+<!-- S2 — المساحة -->
+<section id="s2">
+  <div class="sec-head">المساحة</div>
+  <div class="two-col">
+    <div class="stat-card" style="align-self:start;">
+      <div class="num">22,996<span class="unit"> كم²</span></div>
+      <div class="label">المساحة الإجمالية</div>
+      <div class="note">تمثل 16.05 % من إجمالي مساحة منطقة المدينة المنورة</div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">المساحة — نسبة المدينة المنورة ومراكزها من منطقة المدينة المنورة</div>
+      <div class="chart-box" id="c-area"></div>
+    </div>
+  </div>
+</section>
+
+<!-- S3 — حجم السكان -->
+<section id="s3">
+  <div class="sec-head">حجم السكان</div>
+  <div class="two-col">
+    <div class="stat-card" style="align-self:start;">
+      <div class="num">1,477,047<span class="unit"> نسمة</span></div>
+      <div class="label">حجم السكان</div>
+      <div class="note">تمثل 69.09 % من إجمالي حجم سكان منطقة المدينة المنورة</div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">عدد السكان — نسبة المدينة المنورة ومراكزها من منطقة المدينة المنورة</div>
+      <div class="chart-box" id="c-pop"></div>
+    </div>
+  </div>
+</section>
+
+<!-- S4 — النطاق الإشرافي الإداري -->
+<section id="s4">
+  <div class="sec-head">النطاق الإشرافي الإداري</div>
+  <div class="stat-grid">
+    <div class="stat-card" style="border-top-color:var(--c3);">
+      <div class="num">18<span class="unit"> مراكز إمارة</span></div>
+    </div>
+  </div>
+  <div class="two-col">
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>م</th><th>إسم المركز</th><th>المساحة كم²</th><th>النسبة</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>مركز الصويدرة</td><td>2,771</td><td><div class="pb"><div class="pb-track"><div class="pb-fill" style="width:12.05%"></div></div>12.05%</div></td></tr>
+          <tr><td>2</td><td>مركز شجوي</td><td>2,596</td><td><div class="pb"><div class="pb-track"><div class="pb-fill" style="width:11.29%"></div></div>11.29%</div></td></tr>
+          <tr><td>3</td><td>مركز أبيار الماشي</td><td>2,213</td><td><div class="pb"><div class="pb-track"><div class="pb-fill" style="width:9.63%"></div></div>9.63%</div></td></tr>
+          <tr><td>4</td><td>نطاق إشراف المدينة المنورة</td><td>2,138</td><td><div class="pb"><div class="pb-track"><div class="pb-fill" style="width:9.30%"></div></div>9.30%</div></td></tr>
+          <tr><td>5</td><td>مركز المليليح</td><td>2,078</td><td><div class="pb"><div class="pb-track"><div class="pb-fill" style="width:9.04%"></div></div>9.04%</div></td></tr>
+          <tr><td>6</td><td>مركز الفريش</td><td>1,692</td><td><div class="pb"><div class="pb-track"><div class="pb-fill" style="width:7.36%"></div></div>7.36%</div></td></tr>
+          <tr><td>7</td><td>مركز اليتمة</td><td>1,654</td><td><div class="pb"><div class="pb-track"><div class="pb-fill" style="width:7.19%"></div></div>7.19%</div></td></tr>
+          <tr><td>8</td><td>مركز المندسة</td><td>1,394</td><td><div class="pb"><div class="pb-track"><div class="pb-fill" style="width:6.06%"></div></div>6.06%</div></td></tr>
+          <tr><td>9</td><td>مركز دثير</td><td>1,266</td><td><div class="pb"><div class="pb-track"><div class="pb-fill" style="width:5.51%"></div></div>5.51%</div></td></tr>
+          <tr><td>10</td><td>مركز الضميرية</td><td>1,016</td><td><div class="pb"><div class="pb-track"><div class="pb-fill" style="width:4.42%"></div></div>4.42%</div></td></tr>
+          <tr><td>11</td><td>مركز حزرة</td><td>938</td><td><div class="pb"><div class="pb-track"><div class="pb-fill" style="width:4.08%"></div></div>4.08%</div></td></tr>
+          <tr><td>12</td><td>مركز غراب</td><td>681</td><td><div class="pb"><div class="pb-track"><div class="pb-fill" style="width:2.96%"></div></div>2.96%</div></td></tr>
+          <tr><td>13</td><td>مركز العوينة</td><td>670</td><td><div class="pb"><div class="pb-track"><div class="pb-fill" style="width:2.92%"></div></div>2.92%</div></td></tr>
+          <tr><td>14</td><td>مركز المسبعة</td><td>501</td><td><div class="pb"><div class="pb-track"><div class="pb-fill" style="width:2.18%"></div></div>2.18%</div></td></tr>
+          <tr><td>15</td><td>مركز الراغية</td><td>440</td><td><div class="pb"><div class="pb-track"><div class="pb-fill" style="width:1.92%"></div></div>1.92%</div></td></tr>
+          <tr><td>16</td><td>مركز ضعة</td><td>407</td><td><div class="pb"><div class="pb-track"><div class="pb-fill" style="width:1.77%"></div></div>1.77%</div></td></tr>
+          <tr><td>17</td><td>مركز الفقرة</td><td>350</td><td><div class="pb"><div class="pb-track"><div class="pb-fill" style="width:1.52%"></div></div>1.52%</div></td></tr>
+          <tr><td>18</td><td>مركز الحار</td><td>189</td><td><div class="pb"><div class="pb-track"><div class="pb-fill" style="width:0.82%"></div></div>0.82%</div></td></tr>
+        </tbody>
+        <tfoot><tr><td colspan="2">اجمالي المساحة</td><td>22,996</td><td>100%</td></tr></tfoot>
+      </table>
+    </div>
+    <div class="chart-card">
+      <div class="chart-box" id="c-admin-bar"></div>
+    </div>
+  </div>
+</section>
+
+<!-- S5 — التجمعات العمرانية -->
+<section id="s5">
+  <div class="stat-grid">
+    <div class="stat-card">
+      <div class="num">134<span class="unit"> تجمع</span></div>
+      <div class="label">عدد التجمعات العمرانية</div>
+      <div class="note">تمثل 13.3 % من إجمالي التجمعات بمنطقة المدينة المنورة</div>
+    </div>
+  </div>
+  <div class="two-col" style="margin-bottom:1.5rem;">
+    <div class="chart-card">
+      <div class="chart-title">نسبة التجمعات بالنسبة للمنطقة</div>
+      <div class="chart-box" id="c-settle-region"></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">موقف التجمعات العمرانية</div>
+      <div class="chart-box" id="c-settle-status"></div>
+    </div>
+  </div>
+  <div class="sec-head" style="font-size:1rem;border-bottom-width:1px;">موقف التجمعات العمرانية</div>
+  <div class="tbl-wrap" style="margin-bottom:1.25rem;">
+    <table>
+      <thead>
+        <tr>
+          <th>المحافظة</th>
+          <th>لم تستوفي استمارة حصر مقومات التنمية</th>
+          <th>لها أحوزة معتمدة</th>
+          <th>جاري اعتماد أحوزة لها</th>
+          <th>القرى المحصورة بين النطاق العمراني وحد حماية التنمية (إيقاف الاعتماد)</th>
+          <th>اجمالي عدد التجمعات</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>المدينة المنورة</td><td>89</td><td>35</td><td>3</td><td>7</td><td>134</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="info-text">
+    تساعد عملية اعتماد التنمية العمرانية على تشجيع التنمية العمرانية والاقتصادية داخل القرى المختارة بما يتوافق مع الرؤية الإقليمية ومحاور تنمية القطاع الريفي.
+  </div>
+</section>
+
+<!-- S6 — التشكيل الطبوغرافي -->
+<section id="s6">
+  <div class="sec-head">التشكيل الطبوغرافي</div>
+  <div class="stat-grid">
+    <div class="stat-card">
+      <div class="num">12,380<span class="unit"> كم</span></div>
+      <div class="label">أطوال الأودية</div>
+      <div class="note">تمثل 10.3 % من إجمالي الأودية بمنطقة المدينة المنورة</div>
+    </div>
+    <div class="stat-card" style="border-top-color:var(--c3);">
+      <div class="num">193<span class="unit"> قمة</span></div>
+      <div class="label">عدد القمم الجبلية</div>
+      <div class="note">تمثل 13.14 % من إجمالي القمم الجبلية بمنطقة المدينة المنورة</div>
+    </div>
+  </div>
+  <div class="chart-card">
+    <div class="chart-title">عدد الجبال — نسبة المدينة المنورة ومراكزها من منطقة المدينة المنورة</div>
+    <div class="chart-box" id="c-mountains"></div>
+  </div>
+</section>
+
+<!-- S7 — المواقع الاستثمارية -->
+<section id="s7">
+  <div class="sec-head">المواقع الإستثمارية</div>
+  <div class="invest-grid">
+    <div class="invest-card">
+      <div class="in">480</div>
+      <div class="il">موقع استثماري معتمد</div>
+    </div>
+    <div class="invest-card" style="background:linear-gradient(135deg,#145a4c,#1F6F5F);">
+      <div class="in">144.68<span class="iu"> كم²</span></div>
+      <div class="il">مساحة المواقع الاستثمارية</div>
+    </div>
+  </div>
+  <div class="info-text">
+    تم اعتماد عدد 480 موقع استثماري من وزارة البلديات والإسكان على محاور الطرق الرئيسية بالمدينة بما يسهم في تحفيز ودعم تنمية القطاع الغير نفطي وتعزيز الاستدامة المالية للبلديات وزيادة معدلات التنمية الاقتصادية بالمدينة المنورة.
+  </div>
+</section>
+
+</main>
+
+<nav id="toc" role="navigation" aria-label="قائمة المحتويات">
+  <a class="toc-item" href="#s2">المساحة</a>
+  <a class="toc-item" href="#s3">حجم السكان</a>
+  <a class="toc-item" href="#s4">النطاق الإشرافي الإداري</a>
+  <a class="toc-item" href="#s5">التجمعات العمرانية المعتمدة من المخطط الاقليمي</a>
+  <a class="toc-item" href="#s6">التشكيل الطبوغرافي</a>
+  <a class="toc-item" href="#s7">المواقع الإستثمارية</a>
+</nav>
+</div>
+
+<script>
+const tocLinks=document.querySelectorAll('.toc-item');
+const sections=document.querySelectorAll('section[id]');
+const io=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting)tocLinks.forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+e.target.id));});},{rootMargin:'-10% 0px -80% 0px',threshold:0});
+sections.forEach(s=>io.observe(s));
+const tocPanel=document.getElementById('toc'),tocOverlay=document.getElementById('toc-overlay'),tocToggle=document.getElementById('toc-toggle');
+const openToc=()=>{tocPanel.classList.add('open');tocOverlay.classList.add('open');tocToggle.setAttribute('aria-expanded','true');document.body.style.overflow='hidden';};
+const closeToc=()=>{tocPanel.classList.remove('open');tocOverlay.classList.remove('open');tocToggle.setAttribute('aria-expanded','false');document.body.style.overflow='';};
+tocToggle.addEventListener('click',()=>tocPanel.classList.contains('open')?closeToc():openToc());
+tocOverlay.addEventListener('click',closeToc);
+tocLinks.forEach(a=>a.addEventListener('click',()=>{if(window.innerWidth<=900)closeToc();}));
+
+const base={backgroundColor:'transparent',textStyle:{fontFamily:'Tajawal,sans-serif',color:'#3d6b62'},tooltip:{backgroundColor:'#fff',borderColor:'#c8dcd8',textStyle:{color:'#0D2420',fontFamily:'Tajawal,sans-serif'}},legend:{textStyle:{fontFamily:'Tajawal,sans-serif',color:'#0D2420'}}};
+const mk=id=>{const el=document.getElementById(id);return el?echarts.init(el,'',{renderer:'canvas'}):null;};
+
+const cA=mk('c-area');
+if(cA) cA.setOption({...base,legend:{...base.legend,bottom:8},series:[{type:'pie',radius:['40%','68%'],center:['50%','46%'],label:{formatter:'{b}\n{d}%',fontFamily:'Tajawal',fontSize:12},data:[{value:16.05,name:'المدينة المنورة ومراكزها',itemStyle:{color:'#1F6F5F'}},{value:83.95,name:'منطقة المدينة المنورة',itemStyle:{color:'#c8dcd8'}}]}]});
+
+const cP=mk('c-pop');
+if(cP) cP.setOption({...base,legend:{...base.legend,bottom:8},series:[{type:'pie',radius:['40%','68%'],center:['50%','46%'],label:{formatter:'{b}\n{d}%',fontFamily:'Tajawal',fontSize:12},data:[{value:69.09,name:'المدينة المنورة ومراكزها',itemStyle:{color:'#2FA084'}},{value:30.91,name:'منطقة المدينة المنورة',itemStyle:{color:'#c8dcd8'}}]}]});
+
+const cAb=mk('c-admin-bar');
+if(cAb) cAb.setOption({...base,grid:{containLabel:true,left:10,right:35,top:10,bottom:10},xAxis:{type:'value',splitLine:{lineStyle:{color:'#c8dcd8'}}},yAxis:{type:'category',axisLine:{show:false},axisLabel:{fontFamily:'Tajawal',fontSize:9},data:['مركز الحار','مركز الفقرة','مركز ضعة','مركز الراغية','مركز المسبعة','مركز العوينة','مركز غراب','مركز حزرة','مركز الضميرية','مركز دثير','مركز المندسة','مركز اليتمة','مركز الفريش','مركز المليليح','نطاق المدينة المنورة','مركز أبيار الماشي','مركز شجوي','مركز الصويدرة']},series:[{type:'bar',barMaxWidth:18,itemStyle:{borderRadius:[0,5,5,0],color:{type:'linear',x:0,y:0,x2:1,y2:0,colorStops:[{offset:0,color:'#1F6F5F'},{offset:1,color:'#6FCF97'}]}},data:[0.82,1.52,1.77,1.92,2.18,2.92,2.96,4.08,4.42,5.51,6.06,7.19,7.36,9.04,9.30,9.63,11.29,12.05],label:{show:true,position:'right',fontFamily:'Tajawal',fontSize:9,formatter:p=>p.value+'%'}}]});
+
+const cSR=mk('c-settle-region');
+if(cSR) cSR.setOption({...base,legend:{...base.legend,bottom:8},series:[{type:'pie',radius:['40%','68%'],center:['50%','46%'],label:{formatter:'{b}\n{d}%',fontFamily:'Tajawal',fontSize:12},data:[{value:13.32,name:'المدينة المنورة ومراكزها',itemStyle:{color:'#1F6F5F'}},{value:86.68,name:'منطقة المدينة المنورة',itemStyle:{color:'#c8dcd8'}}]}]});
+
+const cSS=mk('c-settle-status');
+if(cSS) cSS.setOption({...base,legend:{...base.legend,bottom:8},series:[{type:'pie',radius:['40%','68%'],center:['50%','42%'],label:{formatter:'{b}\n{d}%',fontFamily:'Tajawal',fontSize:10},data:[{value:89,name:'لم تستوفي مقومات التنمية',itemStyle:{color:'#1F6F5F'}},{value:35,name:'لها أحوزة معتمدة',itemStyle:{color:'#6FCF97'}},{value:7,name:'إيقاف الاعتماد',itemStyle:{color:'#3d6b62'}},{value:3,name:'جاري اعتماد أحوزة لها',itemStyle:{color:'#2FA084'}}]}]});
+
+const cMt=mk('c-mountains');
+if(cMt) cMt.setOption({...base,legend:{...base.legend,bottom:8},series:[{type:'pie',radius:['40%','68%'],center:['50%','46%'],label:{formatter:'{b}\n{d}%',fontFamily:'Tajawal',fontSize:12},data:[{value:13.14,name:'المدينة المنورة ومراكزها',itemStyle:{color:'#1F6F5F'}},{value:86.86,name:'منطقة المدينة المنورة',itemStyle:{color:'#c8dcd8'}}]}]});
+
+const all=[cA,cP,cAb,cSR,cSS,cMt];
+window.addEventListener('resize',()=>all.forEach(c=>{try{c&&c.resize();}catch(e){}}));
+</script>
+</body>
+</html>
